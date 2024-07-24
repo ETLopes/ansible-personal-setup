@@ -1,3 +1,16 @@
+# NOTE
+
+This is a WIP project. The playbook is not yet complete and it will eventually evolve to a CLI tool written in GO to automate the setup of different environments used by me. 
+
+It will (probably) include the following:
+- [x] React Native Environment Setup
+- [ ] Go Environment Setup
+- [ ] KMP Environment Setup
+- [ ] Jira Integration
+- [ ] Git/Github Integration
+
+
+
 # Ansible Playbook
 
 This playbook is used to install and configure the following services:
