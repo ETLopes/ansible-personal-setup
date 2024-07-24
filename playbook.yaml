@@ -7,6 +7,8 @@
         update_cache: true
         upgrade: dist
       when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - rn
 
     - name: Update and upgrade brew packages (macOS)
       community.general.homebrew:
@@ -14,12 +16,16 @@
         upgrade_all: true
       when: ansible_facts['os_family'] == "Darwin"
       become: false
+      tags:
+        - rn
 
     - name: Install Node.js (Debian-based)
       ansible.builtin.apt:
         name: nodejs
         state: present
       when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - rn
 
     - name: Install Node.js (macOS)
       community.general.homebrew:
@@ -27,6 +33,8 @@
         state: present
       when: ansible_facts['os_family'] == "Darwin"
       become: false
+      tags:
+        - rn
 
 
     - name: Install npm (Debian-based)
@@ -34,17 +42,23 @@
         name: npm
         state: present
       when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - rn
 
     - name: Install yarn
       ansible.builtin.command: npm install --global yarn
       args:
         creates: /Users/eduardolopes/.nvm/versions/node/v20.12.2/bin/yarn
+      tags:
+        - rn
 
     - name: Install Watchman (Debian-based)
       ansible.builtin.apt:
         name: watchman
         state: present
       when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - rn
 
     - name: Install Watchman (macOS)
       community.general.homebrew:
@@ -52,6 +66,8 @@
         state: present
       when: ansible_facts['os_family'] == "Darwin"
       become: false
+      tags:
+        - rn
 
 
     - name: Install Java Development Kit (JDK) (Debian-based)
@@ -59,6 +75,8 @@
         name: openjdk-8-jdk
         state: present
       when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - rn
 
     - name: Install Java Development Kit (JDK) (macOS)
       community.general.homebrew:
@@ -66,6 +84,8 @@
         state: present
       when: ansible_facts['os_family'] == "Darwin"
       become: false
+      tags:
+        - rn
 
     - name: Install Android Studio dependencies (Debian-based)
       ansible.builtin.apt:
@@ -78,6 +98,8 @@
         - lib32z1
         - libbz2-1.0:i386
       when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - rn
 
     - name: Install Gnu-tar (macOS)
       community.general.homebrew:
@@ -85,6 +107,8 @@
         state: present
       when: ansible_facts['os_family'] == "Darwin"
       become: false
+      tags:
+        - rn
 
     - name: Download Android Studio
       ansible.builtin.get_url:
@@ -92,34 +116,44 @@
         dest: /tmp/android-studio.dmg
         mode: '0644'
       when: ansible_facts['os_family'] == "Darwin"
-
+      tags:
+        - rn
 
     - name: Mount the DMG file
       ansible.builtin.command: hdiutil attach /tmp/android-studio.dmg
       args:
         creates: /Volumes/Android\ Studio
       when: ansible_facts['os_family'] == "Darwin"
-
+      tags:
+        - rn
 
     - name: Copy Android Studio to Applications
       ansible.builtin.command: cp -R /Volumes/Android\ Studio/Android\ Studio.app /Applications/
       args:
         creates: /Applications/Android\ Studio.app
       when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - rn
 
     - name: Unmount the DMG file
       ansible.builtin.command: hdiutil detach /Volumes/Android\ Studio
       args:
         removes: /Volumes/Android\ Studio
       when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - rn
 
     - name: Set up Android Studio environment variables
       ansible.builtin.lineinfile:
         path: /etc/profile
         line: 'export ANDROID_HOME=/opt/android-studio'
         state: present
+      tags:
+        - rn
 
     - name: Install React Native CLI
       community.general.npm:
         name: react-native-cli
         global: true
+      tags:
+        - rn
