@@ -1,4 +1,5 @@
-- hosts: all
+- name: Environment Setup
+  hosts: all
   become: true
   tasks:
     - name: Update and upgrade apt packages (Debian-based)
@@ -87,15 +88,30 @@
 
     - name: Download Android Studio
       ansible.builtin.get_url:
-        url: https://dl.google.com/dl/android/studio/ide-zips/2020.3.1.26/android-studio-2020.3.1.26-linux.tar.gz
-        dest: /tmp/android-studio.tar.gz
+        url: https://redirector.gvt1.com/edgedl/android/studio/install/2024.1.1.12/android-studio-2024.1.1.12-mac_arm.dmg
+        dest: /tmp/android-studio.dmg
         mode: '0644'
+      when: ansible_facts['os_family'] == "Darwin"
 
-    - name: Extract Android Studio
-      ansible.builtin.unarchive:
-        src: /tmp/android-studio.tar.gz
-        dest: /opt/
-        remote_src: true
+
+    - name: Mount the DMG file
+      ansible.builtin.command: hdiutil attach /tmp/android-studio.dmg
+      args:
+        creates: /Volumes/Android\ Studio
+      when: ansible_facts['os_family'] == "Darwin"
+
+
+    - name: Copy Android Studio to Applications
+      ansible.builtin.command: cp -R /Volumes/Android\ Studio/Android\ Studio.app /Applications/
+      args:
+        creates: /Applications/Android\ Studio.app
+      when: ansible_facts['os_family'] == "Darwin"
+
+    - name: Unmount the DMG file
+      ansible.builtin.command: hdiutil detach /Volumes/Android\ Studio
+      args:
+        removes: /Volumes/Android\ Studio
+      when: ansible_facts['os_family'] == "Darwin"
 
     - name: Set up Android Studio environment variables
       ansible.builtin.lineinfile:
