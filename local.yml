@@ -36,7 +36,6 @@
       tags:
         - rn
 
-
     - name: Install npm (Debian-based)
       ansible.builtin.apt:
         name: npm
@@ -68,7 +67,6 @@
       become: false
       tags:
         - rn
-
 
     - name: Install Java Development Kit (JDK) (Debian-based)
       ansible.builtin.apt:
@@ -123,6 +121,15 @@
       ansible.builtin.command: hdiutil attach /tmp/android-studio.dmg
       args:
         creates: /Volumes/Android\ Studio
+      when: ansible_facts['os_family'] == "Darwin"
+      tags:
+        - rn
+
+    - name: Wait for DMG to mount
+      ansible.builtin.wait_for:
+        path: /Volumes/Android\ Studio/Android\ Studio.app
+        state: present
+        timeout: 30
       when: ansible_facts['os_family'] == "Darwin"
       tags:
         - rn
